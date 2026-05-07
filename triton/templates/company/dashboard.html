@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}Company Portal | Triton{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-12">
+      <h1 class="mb-4">Company Portal - {{ session.get('company_name') }}</h1>
+    </div>
+  </div>
+
+  <!-- Overview -->
+  <div class="row mb-4">
+    <div class="col-md-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title text-success">{{ products|selectattr('status', 'equalto', 'valid')|list|length }}</h5>
+          <p class="card-text">Valid Audits</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title text-warning">{{ products|selectattr('status', 'equalto', 'expiring')|list|length }}</h5>
+          <p class="card-text">Expiring Soon</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title text-danger">{{ products|selectattr('status', 'equalto', 'expired')|list|length }}</h5>
+          <p class="card-text">Expired</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title text-secondary">{{ products|selectattr('status', 'equalto', 'no_audit')|list|length }}</h5>
+          <p class="card-text">Never Audited</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Products Table -->
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">Your Products</h5>
+        </div>
+        <div class="card-body">
+          {% if products %}
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Product Name</th>
+                  <th>Serial Number</th>
+                  <th>Last Audit Date</th>
+                  <th>Expiration Date</th>
+                  <th>Days Remaining</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for product in products %}
+                <tr>
+                  <td>{{ product.name }}</td>
+                  <td>{{ product.serial_number }}</td>
+                  <td>
+                    {% if product.latest_audit %}
+                      {{ product.latest_audit.audit_date.strftime('%Y-%m-%d') }}
+                    {% else %}
+                      <span class="text-muted">Never audited</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if product.latest_audit %}
+                      {{ product.latest_audit.valid_until.strftime('%Y-%m-%d') }}
+                    {% else %}
+                      <span class="text-muted">-</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if product.remaining_days is not none %}
+                      {{ product.remaining_days }}
+                    {% else %}
+                      <span class="text-muted">-</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if product.status == 'no_audit' %}
+                      <span class="badge bg-secondary">No Audit</span>
+                    {% elif product.status == 'expired' %}
+                      <span class="badge bg-danger">Expired</span>
+                    {% elif product.status == 'expiring' %}
+                      <span class="badge bg-warning text-dark">Expiring</span>
+                    {% else %}
+                      <span class="badge bg-success">Valid</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    <a href="{{ url_for('company.product_detail', product_id=product.id) }}" class="btn btn-sm btn-info">View Details</a>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <div class="text-center py-5">
+            <p class="text-muted">No products found for your company.</p>
+            <p class="text-muted">Contact your auditor to add products.</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

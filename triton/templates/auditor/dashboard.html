@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+
+{% block title %}Auditor Dashboard | Triton{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-12">
+      <h1 class="mb-4">Auditor Dashboard</h1>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">Quick Actions</h5>
+        </div>
+        <div class="card-body">
+          <a href="{{ url_for('auditor.create_product') }}" class="btn btn-primary me-2 mb-2">Create Product</a>
+          <a href="{{ url_for('auditor.create_audit') }}" class="btn btn-success mb-2">Create Audit</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">Overview</h5>
+        </div>
+        <div class="card-body">
+          <p class="mb-1">Products Needing Audit: <strong>{{ products_needing_audit|length }}</strong></p>
+          <p class="mb-1">Expiring Audits: <strong>{{ expiring_audits|length }}</strong></p>
+          <p class="mb-0">Recent Audits: <strong>{{ recent_audits|length }}</strong></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Products Needing Re-audit -->
+  {% if products_needing_audit %}
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">Products Needing Re-audit</h5>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Product Name</th>
+                  <th>Serial Number</th>
+                  <th>Company</th>
+                  <th>Last Audit</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for product in products_needing_audit %}
+                <tr>
+                  <td>{{ product.name }}</td>
+                  <td>{{ product.serial_number }}</td>
+                  <td>{{ product.company.name }}</td>
+                  <td>
+                    {% if product.audits %}
+                      {{ product.audits[0].audit_date.strftime('%Y-%m-%d') }}
+                      {% if product.audits[0].valid_until %}
+                        <br><small class="text-muted">Valid until: {{ product.audits[0].valid_until.strftime('%Y-%m-%d') }}</small>
+                      {% endif %}
+                    {% else %}
+                      <span class="text-muted">Never audited</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    <a href="{{ url_for('auditor.create_audit') }}" class="btn btn-sm btn-success">Create Audit</a>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Expiring Audits -->
+  {% if expiring_audits %}
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">Audits Expiring Soon (Next 30 Days)</h5>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Company</th>
+                  <th>Audit Date</th>
+                  <th>Valid Until</th>
+                  <th>Days Left</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for audit in expiring_audits %}
+                <tr>
+                  <td>{{ audit.product.name }}</td>
+                  <td>{{ audit.product.company.name }}</td>
+                  <td>{{ audit.audit_date.strftime('%Y-%m-%d') }}</td>
+                  <td>{{ audit.valid_until.strftime('%Y-%m-%d') }}</td>
+                  <td>{{ audit.remaining_days }}</td>
+                  <td><span class="{{ audit.status_badge }}">{{ audit.status|title }}</span></td>
+                  <td>
+                    <a href="{{ url_for('auditor.audit_detail', audit_id=audit.id) }}" class="btn btn-sm btn-info">View</a>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Recent Audits -->
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">Recent Audits</h5>
+        </div>
+        <div class="card-body">
+          {% if recent_audits %}
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Company</th>
+                  <th>Audit Date</th>
+                  <th>Valid Until</th>
+                  <th>Status</th>
+                  <th>Auditor</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for audit in recent_audits %}
+                <tr>
+                  <td>{{ audit.product.name }}</td>
+                  <td>{{ audit.product.company.name }}</td>
+                  <td>{{ audit.audit_date.strftime('%Y-%m-%d') }}</td>
+                  <td>{{ audit.valid_until.strftime('%Y-%m-%d') }}</td>
+                  <td><span class="{{ audit.status_badge }}">{{ audit.status|title }}</span></td>
+                  <td>{{ audit.auditor.email }}</td>
+                  <td>
+                    <a href="{{ url_for('auditor.audit_detail', audit_id=audit.id) }}" class="btn btn-sm btn-info">View</a>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <p class="text-muted">No recent audits found.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

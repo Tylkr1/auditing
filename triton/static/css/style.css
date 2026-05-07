@@ -1,0 +1,155 @@
+:root {
+  --font-base: "Inter", Arial, sans-serif;
+
+  --color-bg: #f5f7fa;
+  --color-text: #1e293b;
+  --color-muted: #64748b;
+
+  --color-primary: #2563eb;
+  --color-primary-hover: #1d4ed8;
+
+  --color-surface: #ffffff;
+  --color-border: #e2e8f0;
+
+  --radius-md: 10px;
+  --radius-lg: 14px;
+
+  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-base);
+  background: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.55;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: #0f172a;
+  color: #fff;
+  box-shadow: var(--shadow-sm);
+}
+
+.site-title a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.15rem;
+}
+
+nav {
+  display: flex;
+  gap: 1.25rem;
+}
+
+.nav-link,
+.nav-item {
+  color: #cbd5e1;
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+.nav-link:hover,
+.nav-item:hover {
+  color: #fff;
+}
+
+.container {
+  max-width: 600px;
+  margin: 2.5rem auto;
+  padding: 0 1rem;
+}
+
+.card {
+  background: var(--color-surface);
+  padding: 2rem;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.card h1 {
+  margin-top: 0;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+label {
+  display: block;
+  margin-top: 1.25rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 0.75rem;
+  margin-top: 0.4rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  background: #fff;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+button,
+.primary-button {
+  display: inline-block;
+  margin-top: 1.5rem;
+  padding: 0.85rem 1.4rem;
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+button:hover,
+.primary-button:hover {
+  background: var(--color-primary-hover);
+}
+
+.flash-messages {
+  margin-bottom: 1rem;
+}
+
+.flash {
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  margin-bottom: 0.75rem;
+  font-size: 0.95rem;
+}
+
+.flash.success {
+  background: #e8f9ee;
+  color: #166534;
+}
+
+.flash.danger {
+  background: #fde8e8;
+  color: #b91c1c;
+}
+
+.flash.warning {
+  background: #fff7d6;
+  color: #92400e;
+}
+
+.flash.info {
+  background: #e0edff;
+  color: #1e3a8a;
+}

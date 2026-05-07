@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <section class="dashboard-card">
+    <h1>{{ title }}</h1>
+    <p>Company: <strong>{{ company_name }}</strong></p>
+    <p>Your role is <strong>{{ role }}</strong>.</p>
+    <div class="dashboard-actions">
+      {% if role == 'admin' %}
+        <a href="{{ url_for('auth.signup') }}">Create a new company user</a>
+      {% endif %}
+    </div>
+  </section>
+{% endblock %}

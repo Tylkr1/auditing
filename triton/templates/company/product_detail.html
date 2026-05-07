@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block title %}Product Details | Triton{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{{ url_for('company.dashboard') }}">Company Portal</a></li>
+          <li class="breadcrumb-item active">Product Details</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h1 class="h3 mb-0">{{ product.name }}</h1>
+        </div>
+        <div class="card-body">
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <strong>Serial Number:</strong> {{ product.serial_number }}
+            </div>
+            <div class="col-md-6">
+              <strong>Company:</strong> {{ product.company.name }}
+            </div>
+          </div>
+          {% if product.description %}
+          <div class="row mb-3">
+            <div class="col-12">
+              <strong>Description:</strong>
+              <div class="mt-2 p-3 bg-light rounded">{{ product.description }}</div>
+            </div>
+          </div>
+          {% endif %}
+          <div class="row">
+            <div class="col-12">
+              <strong>Created:</strong> {{ product.created_at.strftime('%Y-%m-%d') }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Audit History -->
+      <div class="card mt-4">
+        <div class="card-header">
+          <h5 class="mb-0">Audit History</h5>
+        </div>
+        <div class="card-body">
+          {% if product.audits %}
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Audit Date</th>
+                  <th>Valid Until</th>
+                  <th>Status</th>
+                  <th>Auditor</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for audit in product.audits %}
+                <tr>
+                  <td>{{ audit.audit_date.strftime('%Y-%m-%d') }}</td>
+                  <td>{{ audit.valid_until.strftime('%Y-%m-%d') }}</td>
+                  <td>
+                    {% if audit.status == 'expired' %}
+                      <span class="badge bg-danger">Expired</span>
+                    {% elif audit.status == 'expiring' %}
+                      <span class="badge bg-warning text-dark">Expiring</span>
+                    {% else %}
+                      <span class="badge bg-success">Valid</span>
+                    {% endif %}
+                  </td>
+                  <td>{{ audit.auditor.email }}</td>
+                  <td>
+                    {% if audit.notes %}
+                      <span title="{{ audit.notes }}">{{ audit.notes|truncate(50) }}</span>
+                    {% else %}
+                      <span class="text-muted">-</span>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <p class="text-muted">No audits found for this product.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">Current Status</h5>
+        </div>
+        <div class="card-body">
+          {% if product.audits %}
+            {% set latest_audit = product.audits[0] %}
+            <div class="mb-3">
+              <strong>Last Audit:</strong><br>
+              {{ latest_audit.audit_date.strftime('%Y-%m-%d') }}
+            </div>
+            <div class="mb-3">
+              <strong>Valid Until:</strong><br>
+              {{ latest_audit.valid_until.strftime('%Y-%m-%d') }}
+            </div>
+            <div class="mb-3">
+              <strong>Days Remaining:</strong><br>
+              {% if latest_audit.remaining_days is not none %}
+                {{ latest_audit.remaining_days }}
+              {% else %}
+                N/A
+              {% endif %}
+            </div>
+            <div class="mb-3">
+              <strong>Status:</strong><br>
+              {% if latest_audit.status == 'expired' %}
+                <span class="badge bg-danger">Expired</span>
+              {% elif latest_audit.status == 'expiring' %}
+                <span class="badge bg-warning text-dark">Expiring Soon</span>
+              {% else %}
+                <span class="badge bg-success">Valid</span>
+              {% endif %}
+            </div>
+          {% else %}
+            <p class="text-muted">This product has never been audited.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
