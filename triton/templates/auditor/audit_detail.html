@@ -3,91 +3,76 @@
 {% block title %}Audit Details | Triton{% endblock %}
 
 {% block content %}
-  <div class="row">
-    <div class="col-12">
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="{{ url_for('auditor.dashboard') }}">Auditor Dashboard</a></li>
-          <li class="breadcrumb-item active">Audit Details</li>
-        </ol>
-      </nav>
-    </div>
+  <div class="page-heading">
+    <h1>Audit Details</h1>
+    <p class="text-muted">Review the audit record and linked product information.</p>
   </div>
 
-  <div class="row">
-    <div class="col-md-8">
+  <div class="row g-4">
+    <div class="col-lg-8">
       <div class="card">
-        <div class="card-header">
-          <h1 class="h3 mb-0">Audit Details</h1>
-        </div>
         <div class="card-body">
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <strong>Product:</strong> {{ audit.product.name }}
+          <div class="d-flex flex-column gap-3">
+            <div class="d-flex flex-column flex-sm-row justify-content-between gap-3">
+              <div>
+                <h5 class="mb-1">Product</h5>
+                <p class="mb-1">{{ audit.product.name }}</p>
+                <small class="text-muted">{{ audit.product.serial_number }}</small>
+              </div>
+              <div class="text-sm-end">
+                <span class="badge-status {{ audit.status }}">{{ audit.status|title }}</span>
+                <div class="text-muted mt-2">{{ audit.remaining_days }} days remaining</div>
+              </div>
             </div>
-            <div class="col-md-6">
-              <strong>Serial Number:</strong> {{ audit.product.serial_number }}
+
+            <div class="row g-3">
+              <div class="col-sm-6">
+                <div class="small text-muted">Audit Date</div>
+                <div>{{ audit.audit_date.strftime('%Y-%m-%d') }}</div>
+              </div>
+              <div class="col-sm-6">
+                <div class="small text-muted">Valid Until</div>
+                <div>{{ audit.valid_until.strftime('%Y-%m-%d') }}</div>
+              </div>
+              <div class="col-sm-6">
+                <div class="small text-muted">Company</div>
+                <div>{{ audit.product.company.name }}</div>
+              </div>
+              <div class="col-sm-6">
+                <div class="small text-muted">Auditor</div>
+                <div>{{ audit.auditor.email }}</div>
+              </div>
             </div>
+
+            <div>
+              <div class="small text-muted">Created</div>
+              <div>{{ audit.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
+            </div>
+
+            {% if audit.notes %}
+            <div>
+              <div class="small text-muted mb-2">Notes</div>
+              <div class="p-3 rounded-3 bg-surface-soft">{{ audit.notes }}</div>
+            </div>
+            {% endif %}
           </div>
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <strong>Company:</strong> {{ audit.product.company.name }}
-            </div>
-            <div class="col-md-6">
-              <strong>Auditor:</strong> {{ audit.auditor.email }}
-            </div>
-          </div>
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <strong>Audit Date:</strong> {{ audit.audit_date.strftime('%Y-%m-%d') }}
-            </div>
-            <div class="col-md-6">
-              <strong>Valid Until:</strong> {{ audit.valid_until.strftime('%Y-%m-%d') }}
-            </div>
-          </div>
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <strong>Status:</strong> <span class="{{ audit.status_badge }}">{{ audit.status|title }}</span>
-            </div>
-            <div class="col-md-6">
-              <strong>Days Remaining:</strong>
-              {% if audit.remaining_days is not none %}
-                {{ audit.remaining_days }}
-              {% else %}
-                N/A
-              {% endif %}
-            </div>
-          </div>
-          <div class="row mb-3">
-            <div class="col-md-12">
-              <strong>Created:</strong> {{ audit.created_at.strftime('%Y-%m-%d %H:%M') }}
-            </div>
-          </div>
-          {% if audit.notes %}
-          <div class="row">
-            <div class="col-12">
-              <strong>Notes:</strong>
-              <div class="mt-2 p-3 bg-light rounded">{{ audit.notes }}</div>
-            </div>
-          </div>
-          {% endif %}
         </div>
       </div>
     </div>
-    <div class="col-md-4">
-      <div class="card">
-        <div class="card-header">
-          <h5 class="mb-0">Product Information</h5>
-        </div>
-        <div class="card-body">
-          <p><strong>Description:</strong></p>
-          {% if audit.product.description %}
-            <p>{{ audit.product.description }}</p>
-          {% else %}
+    <div class="col-lg-4">
+      <div class="card h-100">
+        <div class="card-body d-flex flex-column justify-content-between">
+          <div>
+            <h5 class="mb-3">Product Details</h5>
+            {% if audit.product.description %}
+            <p class="text-muted">{{ audit.product.description }}</p>
+            {% else %}
             <p class="text-muted">No description available.</p>
-          {% endif %}
-          <p><strong>Created:</strong> {{ audit.product.created_at.strftime('%Y-%m-%d') }}</p>
-          <a href="{{ url_for('auditor.products') }}" class="btn btn-outline-primary btn-sm">View All Products</a>
+            {% endif %}
+          </div>
+          <div class="mt-4">
+            <a href="{{ url_for('auditor.products') }}" class="btn btn-outline-primary w-100">View Products</a>
+          </div>
         </div>
       </div>
     </div>

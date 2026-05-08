@@ -3,116 +3,105 @@
 {% block title %}Products | Triton{% endblock %}
 
 {% block content %}
-  <div class="row">
-    <div class="col-12">
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Products</h1>
-        <a href="{{ url_for('auditor.create_product') }}" class="btn btn-primary">Create Product</a>
-      </div>
+  <div class="page-heading">
+    <h1>Products</h1>
+    <p class="text-muted">Browse product inventory with audit status and company context.</p>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-body">
+      <form method="get" class="row g-3 align-items-end">
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <label for="search" class="form-label">Search</label>
+          <input type="search" id="search" name="search" class="form-control" value="{{ search }}" placeholder="Product name, serial, or description">
+        </div>
+        {% if session.get('role') in ['superadmin', 'admin'] %}
+        <div class="col-sm-12 col-md-6 col-lg-3">
+          <label for="company" class="form-label">Company</label>
+          <select class="form-select" id="company" name="company">
+            <option value="">All Companies</option>
+            {% for company in companies %}
+            <option value="{{ company.id }}" {% if selected_company == company.id %}selected{% endif %}>{{ company.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        {% endif %}
+        <div class="col-sm-12 col-md-6 col-lg-2">
+          <button type="submit" class="btn btn-primary w-100">Search</button>
+        </div>
+        <div class="col-sm-12 col-md-6 col-lg-2">
+          <a href="{{ url_for('auditor.products') }}" class="btn btn-outline-secondary w-100">Clear</a>
+        </div>
+        <div class="col-sm-12 col-lg-1 text-end">
+          <a href="{{ url_for('auditor.create_product') }}" class="btn btn-success w-100">New</a>
+        </div>
+      </form>
     </div>
   </div>
 
-  <!-- Search and Filters -->
-  <div class="row mb-4">
-    <div class="col-12">
-      <div class="card">
-        <div class="card-body">
-          <form method="get" class="row g-3">
-            <div class="col-md-4">
-              <label for="search" class="form-label">Search</label>
-              <input type="text" class="form-control" id="search" name="search" value="{{ search }}" placeholder="Product name, serial, or description">
-            </div>
-            {% if session.get('role') in ['superadmin', 'admin'] %}
-            <div class="col-md-3">
-              <label for="company" class="form-label">Company</label>
-              <select class="form-select" id="company" name="company">
-                <option value="">All Companies</option>
-                {% for company in companies %}
-                <option value="{{ company.id }}" {% if selected_company == company.id %}selected{% endif %}>{{ company.name }}</option>
-                {% endfor %}
-              </select>
-            </div>
-            {% endif %}
-            <div class="col-md-2">
-              <label class="form-label">&nbsp;</label>
-              <button type="submit" class="btn btn-secondary w-100">Search</button>
-            </div>
-            <div class="col-md-2">
-              <label class="form-label">&nbsp;</label>
-              <a href="{{ url_for('auditor.products') }}" class="btn btn-outline-secondary w-100">Clear</a>
-            </div>
-          </form>
-        </div>
+  <div class="card">
+    <div class="card-body table-responsive">
+      {% if products %}
+      <table class="table table-hover align-middle mb-0">
+        <thead>
+          <tr>
+            <th>Product Name</th>
+            <th>Serial</th>
+            <th>Company</th>
+            <th>Last Audit</th>
+            <th>Valid Until</th>
+            <th>Status</th>
+            <th class="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for product in products %}
+          <tr>
+            <td>{{ product.name }}</td>
+            <td>{{ product.serial_number }}</td>
+            <td>{{ product.company.name }}</td>
+            <td>
+              {% if product.latest_audit %}
+                {{ product.latest_audit.audit_date.strftime('%Y-%m-%d') }}
+              {% else %}
+                <span class="text-muted">Never audited</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if product.latest_audit %}
+                {{ product.latest_audit.valid_until.strftime('%Y-%m-%d') }}
+              {% else %}
+                <span class="text-muted">—</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if product.status == 'no_audit' %}
+                <span class="badge-status expired">No Audit</span>
+              {% elif product.status == 'expired' %}
+                <span class="badge-status expired">Expired</span>
+              {% elif product.status == 'expiring' %}
+                <span class="badge-status expiring">{{ product.remaining_days }} days</span>
+              {% else %}
+                <span class="badge-status valid">Valid</span>
+              {% endif %}
+            </td>
+            <td class="text-end">
+              <div class="d-flex justify-content-end gap-2 flex-wrap">
+                <a href="{{ url_for('auditor.create_audit') }}" class="btn btn-sm btn-success">Audit</a>
+                {% if session.get('role') in ['superadmin', 'admin'] %}
+                <a class="btn btn-sm btn-outline-primary">Edit</a>
+                {% endif %}
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <div class="text-center py-5">
+        <p class="text-muted mb-0">No products match your search criteria.</p>
       </div>
-    </div>
-  </div>
-
-  <!-- Products Table -->
-  <div class="row">
-    <div class="col-12">
-      <div class="card">
-        <div class="card-body">
-          {% if products %}
-          <div class="table-responsive">
-            <table class="table table-striped">
-              <thead>
-                <tr>
-                  <th>Product Name</th>
-                  <th>Serial Number</th>
-                  <th>Company</th>
-                  <th>Last Audit</th>
-                  <th>Valid Until</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for product in products %}
-                <tr>
-                  <td>{{ product.name }}</td>
-                  <td>{{ product.serial_number }}</td>
-                  <td>{{ product.company.name }}</td>
-                  <td>
-                    {% if product.latest_audit %}
-                      {{ product.latest_audit.audit_date.strftime('%Y-%m-%d') }}
-                    {% else %}
-                      <span class="text-muted">Never audited</span>
-                    {% endif %}
-                  </td>
-                  <td>
-                    {% if product.latest_audit %}
-                      {{ product.latest_audit.valid_until.strftime('%Y-%m-%d') }}
-                    {% else %}
-                      <span class="text-muted">-</span>
-                    {% endif %}
-                  </td>
-                  <td>
-                    {% if product.status == 'no_audit' %}
-                      <span class="badge bg-secondary">No Audit</span>
-                    {% elif product.status == 'expired' %}
-                      <span class="badge bg-danger">Expired</span>
-                    {% elif product.status == 'expiring' %}
-                      <span class="badge bg-warning text-dark">{{ product.remaining_days }} days</span>
-                    {% else %}
-                      <span class="badge bg-success">Valid</span>
-                    {% endif %}
-                  </td>
-                  <td>
-                    <a href="{{ url_for('auditor.create_audit') }}" class="btn btn-sm btn-success me-1">Audit</a>
-                    {% if session.get('role') in ['superadmin', 'admin'] %}
-                    <button class="btn btn-sm btn-outline-primary">Edit</button>
-                    {% endif %}
-                  </td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-          {% else %}
-          <p class="text-muted">No products found.</p>
-          {% endif %}
-        </div>
-      </div>
+      {% endif %}
     </div>
   </div>
 {% endblock %}

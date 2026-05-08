@@ -3,51 +3,28 @@
 {% block title %}Welcome | Triton{% endblock %}
 
 {% block content %}
-  <div class="row justify-content-center">
-    <div class="col-md-8">
-      <div class="text-center py-5">
-        <h1 class="display-4 mb-4">Welcome to Triton Auditing Platform</h1>
-        <p class="lead mb-4">Professional auditing management system for companies and auditors.</p>
-
-        {% if not session.get('user_id') %}
-          <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-lg">Login to Your Account</a>
-        {% else %}
-          <div class="row mt-5">
-            <div class="col-md-4">
-              <div class="card h-100">
-                <div class="card-body text-center">
-                  <h5 class="card-title">Auditor Portal</h5>
-                  <p class="card-text">Create audits, manage products, and track compliance.</p>
-                  {% if session.get('role') in ['auditor', 'admin', 'superadmin'] %}
-                    <a href="{{ url_for('auditor.dashboard') }}" class="btn btn-primary">Go to Auditor Dashboard</a>
-                  {% endif %}
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="card h-100">
-                <div class="card-body text-center">
-                  <h5 class="card-title">Company Portal</h5>
-                  <p class="card-text">View your products and audit status.</p>
-                  {% if session.get('role') in ['admin', 'auditor', 'employee'] %}
-                    <a href="{{ url_for('company.dashboard') }}" class="btn btn-success">Go to Company Portal</a>
-                  {% endif %}
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="card h-100">
-                <div class="card-body text-center">
-                  <h5 class="card-title">Administration</h5>
-                  <p class="card-text">Manage users and system settings.</p>
-                  {% if session.get('role') in ['admin', 'superadmin'] %}
-                    <a href="{{ url_for('auth.signup') }}" class="btn btn-secondary">Manage Users</a>
-                  {% endif %}
-                </div>
-              </div>
+  <div class="auth-page">
+    <div class="card auth-card overflow-hidden">
+      <div class="row g-0 align-items-center">
+        <div class="col-md-6 auth-side d-none d-md-flex flex-column justify-content-center p-5">
+          <h2>Welcome to Triton</h2>
+          <p class="mb-4">Modern auditing management for companies and auditors. Track audit lifecycles, compliance status, and product performance in a clean dashboard.</p>
+          <ul class="list-unstyled text-white small lh-lg">
+            <li><i class="bi bi-check-circle-fill me-2"></i>Professional SaaS-style UI</li>
+            <li><i class="bi bi-check-circle-fill me-2"></i>Audit expiration tracking</li>
+            <li><i class="bi bi-check-circle-fill me-2"></i>Company portal access</li>
+          </ul>
+        </div>
+        <div class="col-12 col-md-6 p-4">
+          <div class="px-3 py-4">
+            <h1 class="h3 mb-3">Triton Auditing</h1>
+            <p class="text-muted">Sign in to manage products, audits, and company insights.</p>
+            <div class="d-grid gap-3 mt-4">
+              <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-lg">Log In</a>
+              <a href="{{ url_for('company.dashboard') }}" class="btn btn-outline-secondary btn-lg">View Portal</a>
             </div>
           </div>
-        {% endif %}
+        </div>
       </div>
     </div>
   </div>

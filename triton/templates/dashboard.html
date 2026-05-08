@@ -3,14 +3,34 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-  <section class="dashboard-card">
+  <div class="page-heading">
     <h1>{{ title }}</h1>
-    <p>Company: <strong>{{ company_name }}</strong></p>
-    <p>Your role is <strong>{{ role }}</strong>.</p>
-    <div class="dashboard-actions">
-      {% if role == 'admin' %}
-        <a href="{{ url_for('auth.signup') }}">Create a new company user</a>
-      {% endif %}
+    <p class="text-muted">Overview of your platform controls and company information.</p>
+  </div>
+
+  <div class="dashboard-grid mb-4">
+    <div class="dashboard-card">
+      <div>
+        <h5>Company</h5>
+        <div class="metric">{{ company_name }}</div>
+      </div>
+      <div class="metric-label">Current company context</div>
     </div>
-  </section>
+    <div class="dashboard-card">
+      <div>
+        <h5>User Role</h5>
+        <div class="metric text-primary">{{ role|title }}</div>
+      </div>
+      <div class="metric-label">Your permissions level</div>
+    </div>
+    <div class="dashboard-card">
+      <div>
+        <h5>Quick Actions</h5>
+        <p class="mb-3 text-muted">Navigate directly to management tools.</p>
+        {% if role == 'admin' %}
+          <a href="{{ url_for('auth.signup') }}" class="btn btn-outline-primary btn-sm">Create company user</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
 {% endblock %}

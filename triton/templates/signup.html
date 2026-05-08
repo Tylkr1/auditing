@@ -3,55 +3,41 @@
 {% block title %}Create User | Triton{% endblock %}
 
 {% block content %}
-  <div class="row justify-content-center">
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-header">
-          <h1 class="h3 mb-0">Create User</h1>
+  <div class="auth-page">
+    <div class="card auth-card mx-auto shadow-sm" style="max-width: 620px;">
+      <div class="card-body">
+        <div class="mb-4 text-center">
+          <h1 class="h3 mb-2">Create Company User</h1>
+          <p class="text-muted mb-0">Admins can add new users for their company with secure credentials.</p>
         </div>
-        <div class="card-body">
-          <form method="post">
-            {{ form.csrf_token }}
-            <div class="mb-3">
-              {{ form.email.label(class="form-label") }}
-              {{ form.email(class="form-control") }}
-              {% if form.email.errors %}
-                <div class="text-danger">
-                  {% for error in form.email.errors %}
-                    <small>{{ error }}</small>
-                  {% endfor %}
-                </div>
-              {% endif %}
-            </div>
-
-            <div class="mb-3">
-              {{ form.password.label(class="form-label") }}
-              {{ form.password(class="form-control") }}
-              {% if form.password.errors %}
-                <div class="text-danger">
-                  {% for error in form.password.errors %}
-                    <small>{{ error }}</small>
-                  {% endfor %}
-                </div>
-              {% endif %}
-            </div>
-
-            <div class="mb-3">
-              {{ form.role.label(class="form-label") }}
-              {{ form.role(class="form-select") }}
-              {% if form.role.errors %}
-                <div class="text-danger">
-                  {% for error in form.role.errors %}
-                    <small>{{ error }}</small>
-                  {% endfor %}
-                </div>
-              {% endif %}
-            </div>
-
-            <button type="submit" class="btn btn-primary w-100">Create User</button>
-          </form>
-          <p class="text-muted mt-3">Only admins can create users in their own company.</p>
-        </div>
+        <form method="post" class="needs-validation" novalidate>
+          {{ form.csrf_token }}
+          <div class="mb-3">
+            {{ form.email.label(class="form-label") }}
+            {{ form.email(class="form-control") }}
+            {% if form.email.errors %}
+              <div class="form-text text-danger">{{ form.email.errors[0] }}</div>
+            {% endif %}
+          </div>
+          <div class="mb-3">
+            {{ form.password.label(class="form-label") }}
+            {{ form.password(class="form-control") }}
+            {% if form.password.errors %}
+              <div class="form-text text-danger">{{ form.password.errors[0] }}</div>
+            {% endif %}
+          </div>
+          <div class="mb-4">
+            {{ form.role.label(class="form-label") }}
+            {{ form.role(class="form-select") }}
+            {% if form.role.errors %}
+              <div class="form-text text-danger">{{ form.role.errors[0] }}</div>
+            {% endif %}
+          </div>
+          <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-primary btn-lg">Create User</button>
+            <a href="{{ url_for('index') }}" class="btn btn-outline-secondary btn-lg">Return Home</a>
+          </div>
+        </form>
       </div>
     </div>
   </div>

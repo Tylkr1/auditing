@@ -1,0 +1,8 @@
+.env
+instance/triton.db
+*.pyc
+__pycache__/
+venv/
+.env.example
+*.log
+.DS_Store

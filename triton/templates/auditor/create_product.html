@@ -3,70 +3,48 @@
 {% block title %}Create Product | Triton{% endblock %}
 
 {% block content %}
-  <div class="row justify-content-center">
-    <div class="col-md-8">
-      <div class="card">
-        <div class="card-header">
-          <h1 class="h3 mb-0">Create Product</h1>
+  <div class="page-heading">
+    <h1>Create Product</h1>
+    <p class="text-muted">Add a product record for the selected company.</p>
+  </div>
+
+  <div class="card mx-auto" style="max-width: 760px;">
+    <div class="card-body">
+      <form method="post" class="row g-4">
+        {{ form.csrf_token }}
+        <div class="col-12 col-md-6">
+          {{ form.company_id.label(class="form-label") }}
+          {{ form.company_id(class="form-select") }}
+          {% if form.company_id.errors %}
+            <div class="form-text text-danger">{{ form.company_id.errors[0] }}</div>
+          {% endif %}
         </div>
-        <div class="card-body">
-          <form method="post">
-            {{ form.csrf_token }}
-            <div class="mb-3">
-              {{ form.company_id.label(class="form-label") }}
-              {{ form.company_id(class="form-select") }}
-              {% if form.company_id.errors %}
-                <div class="text-danger">
-                  {% for error in form.company_id.errors %}
-                    <small>{{ error }}</small>
-                  {% endfor %}
-                </div>
-              {% endif %}
-            </div>
-
-            <div class="mb-3">
-              {{ form.name.label(class="form-label") }}
-              {{ form.name(class="form-control") }}
-              {% if form.name.errors %}
-                <div class="text-danger">
-                  {% for error in form.name.errors %}
-                    <small>{{ error }}</small>
-                  {% endfor %}
-                </div>
-              {% endif %}
-            </div>
-
-            <div class="mb-3">
-              {{ form.serial_number.label(class="form-label") }}
-              {{ form.serial_number(class="form-control") }}
-              {% if form.serial_number.errors %}
-                <div class="text-danger">
-                  {% for error in form.serial_number.errors %}
-                    <small>{{ error }}</small>
-                  {% endfor %}
-                </div>
-              {% endif %}
-            </div>
-
-            <div class="mb-3">
-              {{ form.description.label(class="form-label") }}
-              {{ form.description(class="form-control", rows=3) }}
-              {% if form.description.errors %}
-                <div class="text-danger">
-                  {% for error in form.description.errors %}
-                    <small>{{ error }}</small>
-                  {% endfor %}
-                </div>
-              {% endif %}
-            </div>
-
-            <div class="d-flex gap-2">
-              <button type="submit" class="btn btn-primary">Create Product</button>
-              <a href="{{ url_for('auditor.products') }}" class="btn btn-secondary">Cancel</a>
-            </div>
-          </form>
+        <div class="col-12 col-md-6">
+          {{ form.name.label(class="form-label") }}
+          {{ form.name(class="form-control") }}
+          {% if form.name.errors %}
+            <div class="form-text text-danger">{{ form.name.errors[0] }}</div>
+          {% endif %}
         </div>
-      </div>
+        <div class="col-12 col-md-6">
+          {{ form.serial_number.label(class="form-label") }}
+          {{ form.serial_number(class="form-control") }}
+          {% if form.serial_number.errors %}
+            <div class="form-text text-danger">{{ form.serial_number.errors[0] }}</div>
+          {% endif %}
+        </div>
+        <div class="col-12">
+          {{ form.description.label(class="form-label") }}
+          {{ form.description(class="form-control", rows=4) }}
+          {% if form.description.errors %}
+            <div class="form-text text-danger">{{ form.description.errors[0] }}</div>
+          {% endif %}
+        </div>
+        <div class="col-12 d-flex flex-column flex-sm-row gap-2 justify-content-end">
+          <a href="{{ url_for('auditor.products') }}" class="btn btn-outline-secondary">Cancel</a>
+          <button type="submit" class="btn btn-primary">Create Product</button>
+        </div>
+      </form>
     </div>
   </div>
 {% endblock %}

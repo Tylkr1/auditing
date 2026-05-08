@@ -1,0 +1,25 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm sticky-top">
+  <div class="container-fluid px-3">
+    <button class="btn btn-sm btn-outline-light d-lg-none me-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarCanvas" aria-controls="sidebarCanvas">
+      <i class="bi bi-list"></i>
+    </button>
+    <a class="navbar-brand d-flex align-items-center" href="{{ url_for('index') }}">
+      <span class="brand-mark me-2">T</span>
+      <span class="brand-text">Triton Auditing</span>
+    </a>
+
+    <div class="collapse navbar-collapse" id="navbarTopNav">
+      <div class="ms-auto d-flex align-items-center gap-2">
+        {% if session.get('user_id') %}
+          <div class="text-white text-truncate user-label">
+            <i class="bi bi-person-circle me-1"></i>
+            {{ session.get('role')|title }} • {{ session.get('company_name') }}
+          </div>
+          <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-light btn-sm">Logout</a>
+        {% else %}
+          <a href="{{ url_for('auth.login') }}" class="btn btn-outline-light btn-sm">Login</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</nav>

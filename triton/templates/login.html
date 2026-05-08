@@ -3,54 +3,47 @@
 {% block title %}Login | Triton{% endblock %}
 
 {% block content %}
-  <div class="row justify-content-center">
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-header">
-          <h1 class="h3 mb-0">Login</h1>
+  <div class="auth-page">
+    <div class="card auth-card mx-auto shadow-sm" style="max-width: 540px;">
+      <div class="card-body">
+        <div class="mb-4 text-center">
+          <h1 class="h3 mb-2">Welcome Back</h1>
+          <p class="text-muted mb-0">Sign in with your portal ID, email, and password.</p>
         </div>
-        <div class="card-body">
-          <form method="post">
-            {{ form.csrf_token }}
-            <div class="mb-3">
-              {{ form.portal_id.label(class="form-label") }}
-              {{ form.portal_id(class="form-control") }}
-              {% if form.portal_id.errors %}
-                <div class="text-danger">
-                  {% for error in form.portal_id.errors %}
-                    <small>{{ error }}</small>
-                  {% endfor %}
-                </div>
-              {% endif %}
-            </div>
-
-            <div class="mb-3">
-              {{ form.email.label(class="form-label") }}
-              {{ form.email(class="form-control") }}
-              {% if form.email.errors %}
-                <div class="text-danger">
-                  {% for error in form.email.errors %}
-                    <small>{{ error }}</small>
-                  {% endfor %}
-                </div>
-              {% endif %}
-            </div>
-
-            <div class="mb-3">
-              {{ form.password.label(class="form-label") }}
-              {{ form.password(class="form-control") }}
-              {% if form.password.errors %}
-                <div class="text-danger">
-                  {% for error in form.password.errors %}
-                    <small>{{ error }}</small>
-                  {% endfor %}
-                </div>
-              {% endif %}
-            </div>
-
-            <button type="submit" class="btn btn-primary w-100">Log In</button>
-          </form>
-        </div>
+        <form method="post" class="needs-validation" novalidate>
+          {{ form.csrf_token }}
+          <div class="mb-3">
+            {{ form.portal_id.label(class="form-label") }}
+            {{ form.portal_id(class="form-control") }}
+            {% if form.portal_id.errors %}
+              <div class="form-text text-danger">
+                {{ form.portal_id.errors[0] }}
+              </div>
+            {% endif %}
+          </div>
+          <div class="mb-3">
+            {{ form.email.label(class="form-label") }}
+            {{ form.email(class="form-control") }}
+            {% if form.email.errors %}
+              <div class="form-text text-danger">
+                {{ form.email.errors[0] }}
+              </div>
+            {% endif %}
+          </div>
+          <div class="mb-4">
+            {{ form.password.label(class="form-label") }}
+            {{ form.password(class="form-control") }}
+            {% if form.password.errors %}
+              <div class="form-text text-danger">
+                {{ form.password.errors[0] }}
+              </div>
+            {% endif %}
+          </div>
+          <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-primary btn-lg">Sign In</button>
+            <a href="{{ url_for('index') }}" class="btn btn-outline-secondary btn-lg">Back to Home</a>
+          </div>
+        </form>
       </div>
     </div>
   </div>

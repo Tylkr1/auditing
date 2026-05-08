@@ -1,0 +1,25 @@
+<div class="sidebar bg-white rounded-3 shadow-sm h-100 p-3">
+  <div class="sidebar-header mb-4">
+    <h5 class="mb-1 fw-semibold">Navigation</h5>
+    <p class="text-muted small mb-0">Quick access to platform sections</p>
+  </div>
+  <nav class="nav flex-column sidebar-nav">
+    {% if session.get('role') in ['auditor', 'admin', 'superadmin'] %}
+      <a class="nav-link" href="{{ url_for('auditor.dashboard') }}"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a>
+      <a class="nav-link" href="{{ url_for('auditor.products') }}"><i class="bi bi-box-seam me-2"></i> Products</a>
+      <a class="nav-link" href="{{ url_for('auditor.create_audit') }}"><i class="bi bi-journal-check me-2"></i> Audits</a>
+    {% endif %}
+    {% if session.get('role') in ['admin', 'auditor', 'employee'] %}
+      <a class="nav-link" href="{{ url_for('company.dashboard') }}"><i class="bi bi-building me-2"></i> Company Portal</a>
+    {% endif %}
+    {% if session.get('role') == 'admin' %}
+      <a class="nav-link" href="{{ url_for('auth.signup') }}"><i class="bi bi-people me-2"></i> Users</a>
+    {% endif %}
+    <a class="nav-link" href="{{ url_for('index') }}"><i class="bi bi-house-door me-2"></i> Home</a>
+  </nav>
+
+  <div class="sidebar-footer mt-4 pt-3 border-top">
+    <div class="small text-muted">Need help?</div>
+    <a href="{{ url_for('auth.login') }}" class="small text-decoration-none">Support / docs</a>
+  </div>
+</div>
