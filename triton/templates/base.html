@@ -4,15 +4,19 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>{% block title %}Triton Auditing Platform{% endblock %}</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
   </head>
+
   <body class="bg-light">
     {% include 'partials/navbar.html' %}
 
     <main class="app-shell">
       <div class="container-fluid px-3 py-4">
+
+        {# Flash messages #}
         {% with messages = get_flashed_messages(with_categories=true) %}
           {% if messages %}
             <div class="toast-container position-fixed top-0 end-0 p-3 zindex-fixed">
@@ -28,25 +32,34 @@
           {% endif %}
         {% endwith %}
 
-        {% if session.get('user_id') %}
-          <div class="row gx-4">
-            <aside class="col-lg-3 col-xl-2 d-none d-lg-block">
-              {% include 'partials/sidebar.html' %}
-            </aside>
-            <section class="col-lg-9 col-xl-10">
-              {% block content %}{% endblock %}
-            </section>
-          </div>
-        {% else %}
-          <div class="row justify-content-center">
-            <div class="col-12 col-md-10 col-xl-8">
-              {% block content %}{% endblock %}
+        {# Render page content in a single block, with responsive layout wrappers #}
+        {% block page_content %}{% endblock %}
+
+        {% block content %}
+          {% if session.get('user_id') %}
+            <div class="row gx-4">
+              <aside class="col-lg-3 col-xl-2 d-none d-lg-block">
+                {% include 'partials/sidebar.html' %}
+              </aside>
+
+              <section class="col-lg-9 col-xl-10">
+                {{ self.page_content() }}
+              </section>
             </div>
-          </div>
-        {% endif %}
+
+          {% else %}
+            <div class="row justify-content-center">
+              <div class="col-12 col-md-10 col-xl-8">
+                {{ self.page_content() }}
+              </div>
+            </div>
+          {% endif %}
+        {% endblock %}
+
       </div>
     </main>
 
+    {# Mobile sidebar #}
     <div class="offcanvas offcanvas-start" tabindex="-1" id="sidebarCanvas" aria-labelledby="sidebarCanvasLabel">
       <div class="offcanvas-header">
         <h5 class="offcanvas-title" id="sidebarCanvasLabel">Navigation</h5>
